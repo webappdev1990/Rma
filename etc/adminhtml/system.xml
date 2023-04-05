@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="softnoesis" translate="label" sortOrder="3000">
+            <label>Softnoesis</label>
+        </tab>
+        <section id="magerma" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>RMA</label>
+            <tab>softnoesis</tab>
+            <resource>Softnoesis_Rma::config</resource>
+           <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <!--<field id="allow_guest_user" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allow guest to make return product request</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>-->
+                <field id="adminstatus" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default status for new RMA</label>
+                    <source_model>Softnoesis\Rma\Model\Config\Source\Status</source_model>
+                </field>
+                <field id="confirm_shipping_status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>After confirmation status for new RMA</label>
+                    <source_model>Softnoesis\Rma\Model\Config\Source\Status</source_model>
+                </field>
+                <field id="return_confirmation_label" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Shipping confirmation label</label>
+                </field>
+                <field id="return_confirmation_text" translate="label" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Shipping confirmation text</label>
+                </field>
+            </group>
+            <group id="email_template" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Rma Email Template</label>
+                <field id="new_email_template" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>New Rma Email Template</label>
+                    <source_model>Softnoesis\Rma\Model\Config\Source\Template</source_model>
+                </field>
+                <field id="new_guest_template" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>New Guest Rma Email Template</label>
+                    <source_model>Softnoesis\Rma\Model\Config\Source\Template</source_model>
+                </field>
+                <field id="comment_email_template" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Rma Comment Email Template</label>
+                    <source_model>Softnoesis\Rma\Model\Config\Source\Template</source_model>
+                </field>
+            </group>
+            <group id="rma_policy" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Rma Conditions</label>
+                <field id="return_period" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum time period for RMA after order completion, days</label>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="max_attachment_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max attachment size,MB</label>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="allow_status" translate="label" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allow to request RMA if order has status</label>
+                    <source_model>Softnoesis\Rma\Model\Config\Source\OrderStatus</source_model>
+                    <validate>required-entry</validate>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+            </group>
+            <group id="rma_department" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>RMA department</label>
+                <field id="department_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>RMA Department Name</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="department_email" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>RMA Department email</label>
+                    <validate>required-entry validate-email</validate>
+                </field>
+                <field id="department_address" translate="label" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>RMA Department address</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

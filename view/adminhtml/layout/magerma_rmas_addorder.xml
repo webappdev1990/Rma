@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="Softnoesis\Rma\Block\Adminhtml\Rma\Add" name="rma_new_add">
+                <block class="Softnoesis\Rma\Block\Adminhtml\Rma\Add\Form" template="add/form.phtml" name="form">
+                    <block class="Softnoesis\Rma\Block\Adminhtml\Rma\Add\Order" template="add/order.phtml" name="rma_add_order">
+                        <block class="Softnoesis\Rma\Block\Adminhtml\Rma\Add\Order\OrderGrid" name="order_grid"/>
+                    </block>
+                </block>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

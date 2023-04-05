@@ -1,0 +1,377 @@
+& when (@media-common = true) {
+    .page-content {
+        .rma-view {
+            legend.legend {
+                background-color: #f3f3f3;
+                border-bottom: 0;
+                padding: 5px 0 0 10px;
+                span {
+                    font-size: 16px;
+                    text-transform: uppercase;
+                }
+            }
+            .block.general-info-block {
+                float: left;
+                width: 50%;
+                table {
+                    td {
+                        padding: 10px 0;
+                    }
+                }
+                .box-rma-address {
+                    pre {
+                        font-family: @font-family-name__base;
+                        margin: 0;
+                    }
+                }
+            }
+            .block.contact-info-block {
+                float: left;
+                width: 50%;
+                table {
+                    td {
+                        padding: 10px 0;
+                    }
+                }
+            }
+            .block.additional-info {
+                float: left;
+                width: 50%;
+            }
+            .block.block-add-msg {
+                float: left;
+                width: 50%;
+                .control {
+                    .admin__control-textarea {
+                        width: 65%;
+                    }
+                }
+                .block-content {
+                    .field.upload {
+                        label.label {
+                            float: left;
+                            font-size: 14px;
+                            font-weight: 600;
+                            padding: 8px 10px 0 0;
+                        }
+                    }
+                }
+                .upload-wrapper {
+                    .file-uploader {
+                        .file-uploader-area {
+                            margin-bottom: 20px;
+                            margin-top: 20px;
+                        }
+                        .file-uploader-summary {
+                            float: left;
+                            width: 25%;
+                            vertical-align: top;
+                            padding: 0 13px 10px 0;
+                            .file-uploader-preview {
+                                width: 100%;
+                                height: 200px;
+                                position: relative;
+                            }
+                        }
+                        .file-uploader-filename {
+                            min-height: 42px;
+                        }
+                    }
+                }
+            }
+            .block.item-rma-req {
+                float: left;
+                width: 100%;
+                .table-wrapper {
+                    .admin__control-table {
+                        /*border: 1px solid #d0d0d0;*/
+                        th {
+                            text-transform: uppercase;
+                        }
+                        /*th,
+                        td {
+                            background-color: transparent;
+                            padding: 10px;
+                            border: 1px solid #d0d0d0;
+                        }*/
+                    }
+                }
+            }
+            .block-comments-box {
+                float: left;
+                width: 100%;
+                .rma-message.user {
+                    padding: 0 0 20px 0;
+                    width: 100%;
+                    float: left;
+                    .rma-message-title {
+                        width: 60%;
+                        float: left;
+                        clear: left;
+                        box-sizing: border-box;
+                        .name {
+                            font-weight: bold;
+                            padding-right: 5px;
+                            font-size: 12px;
+                            text-transform: uppercase;
+                            color: #7ea733;
+                        }
+                        .date {
+                            font-size: 12px;
+                            color: #9cc54d;
+                            &:before {
+                                content: "|";
+                                padding: 0 8px 0 0;
+                            }
+                        }
+                    }
+                    .rma-message-text {
+                        border-radius: 5px;
+                        color: #7ea733;
+                        position: relative;
+                        background: #f6ffe5;
+                        border: 1px solid #c3d69f;
+                        padding: 11px 15px 10px 15px;
+                        margin: 10px 0 0px 0;
+                        width: 60%;
+                        float: left;
+                        box-sizing: border-box;
+                        clear: left;
+                        .attached-file {
+                            float: left;
+                            font-weight: bold;
+                            color: #333;
+                            padding: 15px 0 0 0;
+                            width: 100%;
+                        }
+                        .attachmentfiles {
+                            float: left;
+                            width: 100%;
+                            .attached-file-box {
+                                float: left;
+                                width: 25%;
+                                padding: 10px 5px 0px 5px;
+                                a {
+                                    position: relative;
+                                    float: left;
+                                    width: 100%;
+                                    background: #ffffff;
+                                    border: 1px solid #cacaca;
+                                    box-sizing: border-box;
+                                    cursor: pointer;
+                                    height: 200px;
+                                    line-height: 1;
+                                    overflow: hidden;
+                                    position: relative;
+                                    img {
+                                        bottom: 0;
+                                        left: 0;
+                                        margin: auto;
+                                        max-height: 100%;
+                                        max-width: 100%;
+                                        position: absolute;
+                                        right: 0;
+                                        top: 0;
+                                        z-index: 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .rma-message-text:after, .rma-message-text:before {
+                        bottom: 100%;
+                        left: 5px;
+                        border: solid transparent;
+                        content: " ";
+                        height: 0;
+                        width: 0;
+                        position: absolute;
+                        pointer-events: none;
+                    }
+
+                    .rma-message-text:after {
+                        border-color: rgba(136, 183, 213, 0);
+                        border-bottom-color: #f6ffe5;
+                        border-width: 10px;
+                        margin-left: 15px;
+                    }
+                    .rma-message-text:before {
+                        border-color: rgba(194, 225, 245, 0);
+                        border-bottom-color: #c3d69f;
+                        border-width: 11px;
+                        margin-left: 14px;
+                    }
+                    &.adminuser {
+                        .rma-message-title,
+                        .rma-message-text {
+                            float: right;
+                            clear: right;
+                        }
+                        .rma-message-title {
+                            .name {
+                                color: #d68d20;
+                            }
+                            .date {
+                                color: #e6b66d;
+                            }
+                        }
+                        .rma-message-text {
+                            color: #d68d20;
+                            background: #ffebcd;
+                            border-color: #f5ce95;
+                            &:before {
+                                border-bottom-color: #f5ce95;
+                            }
+                            &:after {
+                                border-bottom-color: #ffebcd;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .order-details-section {
+            fieldset {
+                border: 0;
+                padding: 0;
+            }
+            legend.legend {
+                background-color: #f3f3f3;
+                border-bottom: 0;
+                margin-top: 10px;
+                padding: 5px 0 0 10px;
+                span {
+                    font-size: 16px;
+                    text-transform: uppercase;
+                }
+            }
+            .block-box {
+                float: left;
+                width: 100%;
+                .block {
+                    float: left;
+                    width: 50%;
+                    .admin__page-section-title {
+                        padding: 1.7rem 0 1.3rem;
+                    }
+                    &.item-in-this-order {
+                        width: 100%;
+                        .block-content {
+                            .rma-one-item {
+                                padding: 0px 0 10px 0;
+                                .item-options {
+                                    padding: 20px 0 0px 0;
+                                }
+                            }
+                        }
+                    }
+                    &.order-ship-address  {
+                        float: right;
+                    }
+                    &.additional-info {
+                        width: 50%;
+                        .block-content {
+                            width: 100%;
+                            float: left;
+                        }
+                    }
+                    &.add-message {
+                        width: 50%;
+                        .admin__control-textarea {
+                            width: 65%;
+                        }
+                        .upload {
+                            padding-top: 10px;
+                            label.label {
+                                float: left;
+                                font-size: 14px;
+                                font-weight: 600;
+                                padding: 8px 10px 0 0;
+                            }
+                        }
+                    }
+                    &.request-form,
+                    &.order-ship-address {
+                        th,
+                        td {
+                            padding: 10px 0px;
+                        }
+                        th {
+                            font-size: 14px;
+                            color: #303030;
+                        }
+                    }
+                    &.block-add-msg {
+                        .upload-wrapper {
+                            .file-uploader {
+                                .file-uploader-area {
+                                    margin-bottom: 20px;
+                                }
+                                .file-uploader-summary {
+                                    float: left;
+                                    width: 25%;
+                                    vertical-align: top;
+                                    padding: 0 13px 10px 0;
+                                    .file-uploader-preview {
+                                        width: 100%;
+                                        height: 200px;
+                                        position: relative;
+                                    }
+                                }
+                                .file-uploader-filename {
+                                    min-height: 42px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .buttons-set.actions-toolbar {
+                clear: both;
+                padding-top: 20px;
+            }
+        }
+    }
+    .menu-wrapper {
+        .admin__menu {
+            .item-mage-rma {
+                > a {
+                    &:before {
+                        content: @icon-reset__content;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@md-rma-icons-admin__font-name-path: '@{baseDir}Softnoesis_Rma/fonts/icon';
+@md-rma-icons-admin__font-name : 'Rma';
+.lib-font-face(
+@family-name:@md-rma-icons-admin__font-name,
+@font-path: @md-rma-icons-admin__font-name-path,
+@font-weight: normal,
+@font-style: normal
+);
+
+.admin__menu .item-rma-root-commonlyvisible > a:before,
+.admin__menu .item-rma-root.parent.level-0 .submenu > .submenu-title:before,
+.config-nav-block .md_section_rma a:before {
+    content: '';
+    background-image: url('@{baseDir}Softnoesis_Rma/images/rma.svg');
+    background-repeat: no-repeat;
+    background-size: 36px;
+    background-position-x:center;
+    background-position-y: -6px;
+    height: 32px;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0;
+    width: 32px;
+    margin-right: 5px;
+}
+
+.config-nav-block .md_section_rma a:before {
+    background-position-y: -36px;
+    margin: -5px 0 0;
+}

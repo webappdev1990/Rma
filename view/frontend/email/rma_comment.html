@@ -1,0 +1,47 @@
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<!--@subject {{trans "%store_name: Return # %rma_id update" store_name=$store.getFrontendName() rma_id=$rma.rma_id}} @-->
+<!--@vars {
+"store url=\"customer\/account\/\"":"Customer Account URL",
+"var comment|escape|nl2br":"Customer Comment",
+"template config_path=\"design\/email\/footer_template\"":"Email Footer Template",
+"template config_path=\"design\/email\/header_template\"":"Email Header Template",
+"var logo_alt":"Email Logo Image Alt",
+"var logo_url":"Email Logo Image URL",
+"var comment":"Order Comment",
+"var rma.rma_id":"Return Id",
+"var store.getFrontendName()":"Store Name",
+"store url=\"\"":"Store URL"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p class="greeting">{{trans "%name," name=$order.getCustomerName()}}</p>
+
+<p>
+    {{trans
+    'You can check the status of your return by <a href="%account_url">logging into your account</a> or <a href="%form_url">using your order number</a>.'
+
+    account_url=$this.getUrl($store, 'customer/account/',[_nosid:1])
+    form_url=$this.getUrl($store, 'sales/guest/form/',[_nosid:1])
+    |raw}}
+</p>
+
+<table class="message-info" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td>
+            {{var comment|escape|nl2br}}
+        </td>
+    </tr>
+</table>
+<br />
+<p>{{trans "If you have any questions about your return, please contact us at "}}{{config path='trans_email/ident_sales/email'}}</p>
+
+{{template config_path="design/email/footer_template"}}

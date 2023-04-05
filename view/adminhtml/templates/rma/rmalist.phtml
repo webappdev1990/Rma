@@ -1,0 +1,402 @@
+<?php
+$rmaId = $block->getCurrentRmaId();
+$rmaDetails = $block->getRmaDetails($rmaId);
+$rmaItems = $block->getRmaItems($rmaId);
+$comments = $block->getRmaComments($rmaId);
+$customField = $block->unserialize($rmaDetails->getCustomeFields());
+$orderData = $block->getOrderDetails($rmaDetails->getOrderId());
+$shippingAddress = $orderData->getShippingAddress();
+$orderItems = $orderData->getAllVisibleItems();
+$imageBlock = $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+$imagewidth = 200;
+$imageheight = 200;
+$customerId = $orderData->getCustomerId();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$imageHelper = $objectManager->get('\Magento\Catalog\Helper\Image');
+$customeField = $block->getCustomFieldCollection();
+?>
+<div class="page-main-actions">
+    <div class="page-actions">
+        <div class="page-actions-inner">
+            <div class="page-actions-buttons">
+                <button id="back" onclick="location.href = '<?php echo $block->getUrl('*/*/'); ?>'" class="action- scalable rma_back" data-ui-id="back-button" type="button" title="<?php echo __('Back'); ?>"><span><?php echo __('Back'); ?></span> </button>
+                <button id="delete" onclick="location.href = '<?php echo $block->getUrl('*/*/delete', ['id' => $rmaId]); ?>'" class="action- scalable delete" data-ui-id="delete-button" type="button" title="Delete"><span><?php echo __('Delete'); ?></span> </button>
+                <button id="reset" class="action- scalable reset" data-ui-id="reset-button" onclick="location.reload();" type="button" title="Reset"><span><?php echo __('Reset'); ?></span> </button>
+                <button id="save_and_continue_rma" class="action- scalable save ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only rmaedit-save-continue" type="button" title="Save and Continue Edit"><span><?php echo __('Save and Continue Edit'); ?></span> </button>
+                <button id="save_rma" class="action- scalable save primary ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only rmaedit-save" type="button" title="Save"><span><?php echo __('Save'); ?></span> </button>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="edit_form_rma" action="<?php echo $block->getFormAction(); ?>" method="post" enctype="multipart/form-data" class="admin__scope-old MultiFile-intercepted" novalidate="novalidate" _lpchecked="1" data-mage-init='{"validation":{}}'>
+    <input type="hidden" name="form_key" value='<?php echo $block->getFormKey(); ?>' />
+    <input type="hidden" name="rma_id" value='<?php echo $rmaId; ?>' />
+    <input type="hidden" name="order_id" value='<?php echo $rmaDetails->getOrderId(); ?>' />
+    <input type="hidden" id="rma_back" name="back" value='0' />
+    <input type="hidden" name="customer_name" value="<?php echo $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname(); ?>" />
+    <div class="rma-view">
+        <div class="block general-info-block">
+            <fieldset class="fieldset admin__fieldset " id="edit_fieldset">
+                <legend class="admin__legend legend">
+                    <span>General Information</span>
+                </legend>
+                <div class="box box-rma-address">
+                    <table width="100%">
+                        <tbody>
+                        <td colspan="2">
+                            <?php
+                            $orderDate = ($orderData->getCreatedAt()) ? date('M d, Y', strtotime($orderData->getCreatedAt())) : 'N / A';
+                            $rmaDate = ($rmaDetails->getCreatedAt()) ? date('M d, Y', strtotime($rmaDetails->getCreatedAt())) : 'N / A';
+                            ?>
+                        <tr>
+                            <td valign="top"><strong>RMA :</strong></td>
+                            <td><?php echo $rmaDetails->getRmaId(); ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Order # :</strong></td>
+                            <td><a  href="<?php echo $block->getUrl('sales/order/view/order_id/' . $orderData->getEntityId() . '/'); ?>" target="_blank">
+                                    <?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getIncrementId()) ?></a> at <?php echo $orderDate; ?> (<?php echo $block->getPriceFormat($orderData->getGrandTotal()); ?> )</td>
+                        </tr>
+
+                        <tr>
+                            <td valign="top"><strong>Department name:</strong></td>
+                            <td valign="top"><?php echo $block->getDepartmentName(); ?></td>
+                        </tr>
+                        <tr>
+                            <td valign="top"><strong>Department Email:</strong></td>
+                            <td valign="top"><?php echo $block->getDepartmentEmail(); ?></td>
+                        </tr>
+                        <tr>
+                            <td valign="top"><strong>Department Address:</strong></td>
+                            <td valign="top"><pre><?php echo $block->escapeHtml($block->getDepartmentAddress()); ?></pre></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+        </div>    
+        <div class="block contact-info-block">
+            <fieldset class="fieldset admin__fieldset " id="item_fieldset">
+                <legend class="admin__legend legend">
+                    <span>Contact Information:</span>
+                </legend>
+                <br>
+                <div class="block-content">
+                    <div class="box box-rma-address">
+                        <table width="100%">
+                            <tbody>
+                                <tr>
+                                    <td valign="top"><strong>Customer Name :</strong></td>
+                                    <td><a  href="<?php echo $block->getUrl('customer/index/edit/id/' . $customerId . '/'); ?>" target="_blank"><?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname()); ?></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><strong>Customer Email :</strong></td>
+                                    <td><?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getEmail()); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><strong>Customer Orders :</strong></td>
+                                    <td><?php /* @escapeNotVerified */ echo $block->escapeHtml("Total " . $block->getOrders($customerId)->count() . " Orders by Customer"); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><strong>Address :</strong></td>
+                                    <td valign="top"><?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getStreet()[0]); ?><br>
+                                        <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getCity()); ?>,  <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getRegion()); ?>, <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getPostCode()); ?><br>
+                                        <?php /* @escapeNotVerified */ echo $block->escapeHtml($block->getCountryname($shippingAddress->getCountryId())); ?><br>
+                                        T: <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getTelephone()); ?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="block item-rma-req">
+            <fieldset class="fieldset admin__fieldset " id="item_fieldset">
+                <legend class="admin__legend legend">
+                    <span>Items RMA Requested for</span>
+                </legend>
+                <br>
+                <div class="block-content">
+                    <div class="table-wrapper">
+                        <table class="admin__control-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="col">Product Image</th>
+                                    <th scope="col" class="col">Product Name</th>
+                                    <th scope="col" class="col">SKU</th>
+                                    <th scope="col" class="col">Qty</th>
+                                    <th scope="col" class="col">Reason</th>
+                                    <th scope="col" class="col">Resolution</th>
+                                    <th scope="col" class="col">Condition</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($rmaItems as $item) {
+                                    $product = $block->getLoadProduct($item->getProductId());
+                                    //$productImage = $imageBlock->getImage($product, 'product_small_image');
+                                    $imageUrl = $imageHelper->init($product, 'small_image', ['type' => 'small_image'])->keepAspectRatio(true)->resize('85', '85')->getUrl();
+                                    ?>
+                                                    <tr>
+                                                        <td data-th="Product" class="col">
+                                                            <img src="<?php echo $imageUrl; ?>" alt ="" title="" />
+                                                        </td>
+                                                        <td data-th="Product Name" class="col">
+                                            <?php echo $product->getName(); ?>               
+                                                        </td>
+                                                        <td data-th="SKU" class="col">
+                                            <?php echo $product->getSku(); ?> 
+                                                        </td>
+                                                        <td data-th="QTY" class="col">
+                                            <?php echo $item->getQty(); ?>                       
+                                                        </td>
+                                                        <td data-th="Reason" class="col">
+                                            <?php echo $block->getReasonOptionText($item->getCondition()); ?>
+                                                        </td>
+                                                        <td data-th="Resolution" class="col">
+                                            <?php echo $block->getResolutionOptionText($item->getCondition()); ?>   
+                                                        </td>
+                                                        <td data-th="Condition" class="col">
+                                            <?php echo $block->getConditionOptionText($item->getCondition()); ?>
+                                                        </td>
+                                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="block additional-info">
+            <div class="block-content">
+                <fieldset class="fieldset admin__fieldset">
+                    <legend class="admin__legend legend">
+                        <span>Additional Information</span>
+                    </legend>
+                    <?php
+ 
+                    foreach ($customeField as $fields) {
+                        $frontend_input = $fields->getFrontendInput();
+                        switch ($frontend_input) {
+                            case "select":
+                                ?> 
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>">
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control" id="<?php echo $fields->getCode(); ?>"> <?php $dropdown = $block->unserializeValue($fields->getDropdownOption()); ?>
+                                        <select class="select admin__control-select" name="cutome[<?php echo $fields->getCode(); ?>]">
+                                            <?php
+                                            foreach ($dropdown as $options) {
+                                                if (isset($customField) && isset($customField[$fields->getCode()])) {
+                                                    $selected = ($customField[$fields->getCode()] == $options['admin']) ? "selected = selected" : '';
+                                                } else {
+                                                    $selected = '';
+                                                }
+                                                ?> 
+                                                <option <?php echo $selected; ?> value="<?php echo $options['admin'] ?>" ><?php echo $options['admin'] ?></option>                  
+                                            <?php } ?>
+                                            </select>
+                                        </div> 
+                                    </div>    
+                                <?php
+                                break;
+                            case "checkbox":
+                                if (isset($customField) && isset($customField[$fields->getCode()])) {
+                                    $checkboxvalue = ($customField[$fields->getCode()]) ? "checked = checked" : '';
+                                } else {
+                                    $checkboxvalue = '';
+                                }
+                                ?>
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>" >
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control">
+                                        <input id="<?php echo $fields->getCode(); ?>" name="cutome[<?php echo $fields->getCode(); ?>]" value="1" type="checkbox" <?php echo $checkboxvalue; ?> > 
+                                    </div>
+                                </div>
+                                <?php
+                                break;
+                            case "text":
+                                if (isset($customField) && isset($customField[$fields->getCode()])) {
+                                    $textvalue = $customField[$fields->getCode()];
+                                } else {
+                                    $textvalue = '';
+                                }
+                                ?>
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>">
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control">
+                                        <input id="<?php echo $fields->getCode(); ?>" name="cutome[<?php echo $fields->getCode(); ?>]" value="<?php echo $textvalue; ?>" type="text" class=" input-text admin__control-text">   
+                                    </div>
+                                </div>
+
+                                <?php
+                                break;
+                            case "boolean":
+                                ?>
+                            <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>">
+                                    <span><?php echo $fields->getTitle(); ?></span>
+                                </label>
+                                <div class="admin__field-control control" id="<?php echo $fields->getCode(); ?>">           
+                                    <select class="select admin__control-select" name="cutome[<?php echo $fields->getCode(); ?>]">
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                    </select>
+
+                                </div> 
+                            </div> 
+                                <?php
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    ?>
+                </fieldset>
+            </div>
+        </div>
+        <div class="block block-add-msg">
+            <fieldset class="fieldset admin__fieldset " id="item_fieldset">
+                <legend class="admin__legend legend">
+                    <span>Add Message</span>
+                </legend>
+                <br>
+                <div class="block-content">
+                    <input name="rma_id" type="hidden" value="<?php echo $rmaId; ?>">
+                    <div class="admin__field field field required">
+                        <label class="label admin__field-label" for="">
+                            <span>Status</span>
+                        </label>
+                        <div class="admin__field-control control" id="">
+                            <select  class="select admin__control-select" name="adminstatus" data-validate="{required:true}">
+                                <option value="">-- Select a Status --</option>
+                                <?php
+                                $statusDrop = $block->getStatusDropdown();
+                                foreach ($statusDrop as $option) {
+                                    $selected = ($rmaDetails->getAdminstatus() == $option['value']) ? "selected = selected" : '';
+                                    ?>
+                                        <option <?php echo $selected; ?> value="<?php echo $option['value'] ?>">
+                                            <?php echo $option['label'] ?>
+                                        </option>
+                                <?php } ?>
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="admin__field field comment required">
+                        <label class="label admin__field-label">
+                            <span>Message</span>
+                        </label>
+                        <div class="admin__field-control control">
+                            <textarea name="commentdata[comment]" id="comment" class="admin__control-textarea" data-validate="{required:true}"></textarea>
+                        </div>
+                    </div>
+                    <div class="admin__field">
+                        <div class="order-history-comments-options">
+                            <div class="admin__field admin__field-option">
+                                <input name="commentdata[is_customer_notified]" type="checkbox" id="commentdata_notify" class="admin__control-checkbox" value="1">
+                                <label class="admin__field-label" for="history_notify">
+                                    Notify Customer by Email                            
+                                </label>
+                            </div>
+<!--                            <div class="admin__field admin__field-option">
+                                <input name="commentdata[is_visible_on_front]" type="checkbox" id="commentdata_visible" class="admin__control-checkbox" value="1">
+                                <label class="admin__field-label" for="history_visible">
+                                    Visible on Storefront                        
+                                </label>
+                            </div>-->
+                        </div>
+                    </div>
+                    <div class="field upload">
+                        <label class="label">
+                            <span>Attach files</span>
+                        </label>
+                        <?php $fileSize = ($block->getFileSize()) ? $block->getFileSize() : 10000000; ?>
+                        <div class="upload-wrapper" data-bind="scope: 'uploader'">
+                            <!-- ko template: getTemplate() --><!-- /ko -->
+                        </div>
+                        <script type="text/x-magento-init">
+                            {
+                               ".upload-wrapper": {
+                                   "Magento_Ui/js/core/app": {
+                                       "components": {
+                                           "uploader": {
+                                               "component": "Magento_Ui/js/form/element/file-uploader",
+                                               "template": "ui/form/element/uploader/uploader",
+                                               "previewTmpl": "Softnoesis_Rma/form/element/uploader/preview",
+                                               "dataScope": "custom.image",
+                                               "isLoading": false,
+                                               "maxFileSize": <?php echo $fileSize; ?>,
+                                               "isMultipleFiles": true,
+                                               "uploaderConfig": {
+                                                    "url": "<?php echo $block->getUrl('magerma/image/upload', ['_current' => true, '_use_rewrite' => true]); ?>"
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                            }
+                        </script>
+                    </div>
+            </fieldset>
+            <div class="message info">
+                <span>
+                    <p>Allowed file types : jpg, jpeg, gif, png</p>
+                    <p>Maximum file size : <?php echo $fileSize / 1000000 ?> MB</p>
+                </span>
+            </div>
+        </div>
+        <div class="block block-comments-box">
+            <fieldset class="fieldset admin__fieldset " id="edit_fieldset">
+                <legend class="admin__legend legend">
+                    <span>RMA History</span>
+                </legend>
+                <br>
+                <div class="block-content">
+                    <?php foreach ($comments as $comment) { ?>
+                                <div class="rma-message user <?php echo $comment->getCommentside(); ?>">
+                                    <div class="rma-message-title">
+                                        <span class="name"><?php echo $comment->getBy(); ?></span>
+                                <?php $commentDate = ($comment->getCreatedAt()) ? date('M d, Y', strtotime($comment->getCreatedAt())) : 'N / A'; ?> 
+                                        <span class="date"><?php echo $commentDate; ?></span>
+                                    </div>
+                                    <div class="rma-message-text">
+                                <?php echo $comment->getComments(); ?>
+                                        <div class="attachmentfiles">
+                                    <?php
+                                    $imgs = $comment->getCommentImage();
+                                    if (!empty($imgs)) {
+                                        $attachments = $block->unserializeValue($comment->getCommentImage());
+                                        if ($attachments) {
+                                            ?>
+                                      <div>  <label class="label">Attached File</label></div>
+                                                <?php
+                                                if (is_array($attachments)) {
+                                                    foreach ($attachments as $attachment) {
+                                                        ?>
+                                                        <div class="attached-file-box">
+                                                            <a target="_blank" href="<?php echo $attachment; ?>">
+                                                                <img width="" src="<?php echo $attachment; ?>" alt="attachment" title="">
+                                                            </a>
+                                                        </div>
+                                                    <?php }
+                                                }
+                                        }}
+                                    ?>
+                                            </div>
+                                    </div>
+                                </div>
+                    <?php } ?>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</form>

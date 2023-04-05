@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_account_navigation">
+            <block class="Magento\Framework\View\Element\Html\Link\Current" ifconfig="magerma/general/enable" name="customer-account-navigation-custom-link" after="-" >
+                <arguments>
+                    <argument name="label" xsi:type="string" translate="true">RMA</argument>
+                    <argument name="path" xsi:type="string">magerma/customer/rmalist</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

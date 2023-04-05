@@ -1,0 +1,7 @@
+<?php /** @var $block \Softnoesis\Rma\Block\Adminhtml\Rma\Add\Order */ ?>
+<div class="fieldset-wrapper">
+    <div class="fieldset-wrapper-title">
+        <span class="title <?php echo($block->getHeaderCssClass()) ? $block->getHeaderCssClass() . ' icon-head' : '' ?>"><?php /* @escapeNotVerified */ echo $block->getHeaderText() ?></span>
+    </div>
+    <?php echo $block->getChildHtml('', true) ?>
+</div>

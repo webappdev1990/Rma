@@ -1,0 +1,291 @@
+<?php
+$rmaId = $block->getRmaId();
+$rmaDetails = $block->getRmaDetails($rmaId);
+$rmaItems = $block->getRmaItems($rmaId);
+$comments = $block->getRmaComments($rmaId);
+$orderData = $block->getOrderDetails($rmaDetails->getOrderId());
+$shippingAddress = $orderData->getShippingAddress();
+$orderItems = $orderData->getAllVisibleItems();
+$imageBlock = $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+$confirmUrl = $block->getShippingUrl();
+$printUrl =   $block->getPrintRmaUrl();
+$logoUrl = $block->getLayout()->getBlock('logo')->getLogoSrc();
+$print_css = $block->assetRepository->createAsset('Softnoesis_Rma/css/style-print.css');
+?>
+<div class="rma-view">
+    <script>
+       require(
+        [
+            'jquery',
+            'Magento_Ui/js/modal/modal'
+        ],
+        function($,modal) {
+            var options = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: $.mage.__('<?php echo $block->getShippingConfirmLabel(); ?>'),
+                buttons: [{
+                    text: $.mage.__('Confirm Shipping'),
+                    class: 'action primary wide ',
+                    click: function () {
+                        window.location.href = '<?php echo $confirmUrl; ?>';
+                    },
+                },
+                {
+                    text: $.mage.__('Cancel'),
+                    class: 'action close-popup wide ',
+                    click: function () {
+                        this.closeModal();
+                    }
+                }]
+            };
+            var popup = modal(options, $('#rma-confirmation'));
+            $("[data-role=confirm-rma-shipping]").on('click',function(){ 
+                $("#rma-confirmation").modal("openModal");
+            });
+
+            $(".rma-print-layout").on('click',function(){ 
+                var divToPrint =  '<img src="<?php echo $logoUrl ?>" />';
+                divToPrint += $(".main-printlayout").html();
+                var popupWin = window.open('', '_blank', 'width=600,height=600');
+                popupWin.document.open();
+                popupWin.document.write('<html> <head> <link rel="stylesheet" href="<?php echo $print_css->getUrl(); ?>"  media="all" /> </head><body class="print-popup-body" onload="window.print();"> '+ divToPrint +'</body> </html>');
+                popupWin.document.close();
+            });
+        }
+    );
+    </script>
+
+    <div class="rma-control-buttons" style="float: right;">
+        <button class="rma-print-layout" >
+            <span>Print Slip</span></button>
+        <?php if (!$rmaDetails->getConfirmShipping()) { ?>
+            <button data-role="confirm-rma-shipping" class="action primary">
+                    <span>Confirm Shipping</span>
+            </button>
+        <?php } ?>
+    </div>
+    <div id="rma-confirmation" style="display:none" title="Confirm Shipping">
+        <div class="field">
+            <div class="control">
+                <p><?php echo $block->getShippingConfirmText(); ?></p>
+            </div>
+        </div>
+    </div>
+    <div class="main-printlayout">
+    <div class="block">
+        <div class="block-title">
+            <strong>Request Information</strong>
+        </div>
+        <div class="block-content">
+            <div class="box box-rma-information">
+                <?php
+                $orderDate = ($orderData->getCreatedAt()) ? date('M d, Y', strtotime($orderData->getCreatedAt())) : 'N / A';
+                $rmaDate = ($rmaDetails->getCreatedAt()) ? date('M d, Y', strtotime($rmaDetails->getCreatedAt())) : 'N / A';
+                ?> 
+                <table width="100%">
+                    <tbody>
+                        <tr>
+                            <th>RMA:</th>
+                            <td>#<?php echo $rmaDetails->getRmaId(); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Order:</th>
+                            <td>
+                                <a href="<?php echo $block->getUrl('sales/order/view/order_id/').'order_id/'.$orderData->getId();?>" target="_blank">
+                            #<?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getIncrementId()) ?></a> at <?php echo $orderDate; ?> (<?php echo $block->getPriceFormat($orderData->getGrandTotal()); ?> )</td>
+                        </tr>
+
+                        <tr>
+                            <th>Date Requested:</th>
+                            <td><?php /* @escapeNotVerified */ echo $block->escapeHtml($rmaDate) ?></td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td><?php echo $block->getStatusOptionText($rmaDetails->getAdminstatus()); ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="box box-rma-address">
+                <table width="100%">
+                    <tbody>
+                        <tr>
+                            <th align="left">Customer Name:</th>
+                            <td align="left">
+                                <?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getCustomerName()); ?>  
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Contact Information:
+                            </th>
+                            <td>
+                                <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname()); ?><br>
+                                <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getStreet()[0]); ?><br>
+                                <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getCity()); ?>,  <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getRegion()); ?>, <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getPostCode()); ?><br>
+                                <?php /* @escapeNotVerified */ echo $block->escapeHtml($block->getCountryname($shippingAddress->getCountryId())); ?><br>
+                                T: <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getTelephone()); ?>                   </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>    
+    <div class="block">
+        <div class="block-title">
+            <strong>Items RMA Requested for</strong>
+        </div>
+        <div class="block-content">
+            <div class="table-wrapper">
+                <table class="data table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col"></th>
+                            <th scope="col" class="col">Product Name</th>
+                            <th scope="col" class="col">SKU</th>
+                            <th scope="col" class="col">Qty</th>
+                            <th scope="col" class="col">Reason</th>
+                            <th scope="col" class="col">Resolution</th>
+                            <th scope="col" class="col">Condition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($rmaItems as $item) {
+                            $product = $block->getLoadProduct($item->getProductId());
+                            $productImage = $imageBlock->getImage($product, 'product_small_image');
+                            ?>
+                            <tr>
+                                <td data-th="Product" class="col">
+                                    <?php echo $productImage->toHtml(); ?>
+                                </td>
+                                <td data-th="Product Name" class="col">
+                                    <?php echo $product->getName(); ?>               
+                                </td>
+                                <td data-th="SKU" class="col">
+                                    <?php echo $product->getSku(); ?> 
+                                </td>
+                                <td data-th="QTY" class="col">
+                                    <?php echo $item->getQty(); ?>                       
+                                </td>
+                                <td data-th="Reason" class="col">
+                                    <?php echo $block->getReasonOptionText($item->getCondition()); ?>
+                                </td>
+                                <td data-th="Resolution" class="col">
+                                    <?php echo $block->getResolutionOptionText($item->getCondition()); ?>   
+                                </td>
+                                <td data-th="Condition" class="col">
+                                    <?php echo $block->getConditionOptionText($item->getCondition()); ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="block block-add-msg">
+        <div class="block-title">
+            <strong>Add Message</strong>
+        </div>
+        <div class="block-content">
+            <form action="<?php echo $block->getCommentRequestUrl(); ?>" method="POST" enctype="multipart/form-data" data-hasrequired="* Required Fields" novalidate="novalidate" class="MultiFile-intercepted" data-mage-init='{"validation":{}}'>
+                <input name="rma_id" type="hidden" value="<?php echo $rmaId; ?>">
+                <input name="order_id" type="hidden" value="<?php echo $rmaDetails->getOrderId(); ?>">
+
+                <fieldset class="fieldset">
+                    <div class="field comment">
+                        <div class="control">
+                            <textarea name="comment" id="comment" class="input-text" data-validate="{required:true}"></textarea>
+                        </div>
+                    </div>
+                    <div class="field upload">
+                        <div class="upload-submit">
+                            <label class="label">
+                                <span>Attach files</span>
+                            </label>
+                            <div class="actions-toolbar">
+                                <div class="primary">
+                                    <button type="submit" class="action primary">
+                                        <span>Submit</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <?php $fileSize  = ($block->getFileSize()) ? $block->getFileSize(): 10000000 ; ?>
+                        <div class="upload-wrapper" data-bind="scope: 'uploader'">
+                            <!-- ko template: getTemplate() --><!-- /ko -->
+                        </div>
+                       <script type="text/x-magento-init">
+                            {
+                               ".upload-wrapper": {
+                                   "Magento_Ui/js/core/app": {
+                                       "components": {
+                                           "uploader": {
+                                               "component": "Magento_Ui/js/form/element/file-uploader",
+                                               "template": "ui/form/element/uploader/uploader",
+                                               "previewTmpl": "Softnoesis_Rma/form/element/uploader/preview",
+                                               "dataScope": "custom.image",
+                                               "isLoading": false,
+                                               "maxFileSize": <?php echo $fileSize; ?>,
+                                               "isMultipleFiles": true,
+                                               "uploaderConfig": {
+                                                    "url": "<?php echo $block->getUrl('magerma/image/upload', ['_current' => true, '_use_rewrite' => true]); ?>"
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                            }
+                        </script>
+                    </div>
+                </fieldset>
+                <div class="message info">
+                    <span>
+                        <p>Allowed file types : jpg, jpeg, gif, png</p>
+                        <p>Maximum file size : <?php echo $fileSize / 1000000 ?> MB</p>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>        
+    <div class="block block-comments-box">
+        <div class="block-title">
+            <strong>RMA History</strong>
+        </div>
+        <div class="block-content">
+            <?php foreach ($comments as $comment) {
+                $commentDate = ($comment->getCreatedAt()) ? date('M d, Y', strtotime($comment->getCreatedAt())) : 'N / A';
+                ?>
+            <div class="rma-message user <?php echo $comment->getCommentside(); ?>">
+                <div class="rma-message-title">
+                    <span class="name"><?php echo $comment->getBy(); ?></span>
+                    <span class="date"><?php /* @escapeNotVerified */ echo $block->escapeHtml($commentDate) ?></span>
+                </div>
+                <div class="rma-message-text">
+                    <?php echo $comment->getComments(); ?>
+                    <div class="attachmentfiles">
+                        <?php
+                        $imgs = $comment->getCommentImage();
+                        if (!empty($imgs)) {
+                            $attachments = $block->unserializeValue($comment->getCommentImage());
+                            if ($attachments) { ?>
+                                <label class="label">Attached File</label>
+                                <?php foreach ($attachments as $attachment): ?>
+                                    <div class="attached-file-box">
+                                        <a target="_blank" href="<?php echo $attachment; ?>">
+                                            <img width="" src="<?php echo $attachment; ?>" alt="attachment" title="">
+                                        </a>
+                                    </div>
+                                <?php endforeach;
+                            } }?>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>

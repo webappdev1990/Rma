@@ -1,0 +1,452 @@
+<?php
+$orderId  = $block->getCurrentOrderId();
+$orderData = $block->getOrderDetails();
+$customerId = $orderData->getCustomerId();
+if ($orderData->getCustomerIsGuest()) {
+    $customerName = $orderData->getBillingAddress()->getName();
+    $customer_link  ="#";
+} else {
+    $customer_link  = $block->getUrl('customer/index/edit/id/'.$customerId.'/');
+    $customerName = $block->escapeHtml($orderData->getCustomerFirstname() .' '. $orderData->getCustomerLastname());
+}
+
+$shippingAddress = $orderData->getShippingAddress();
+$orderItems = $orderData->getAllVisibleItems();
+$imageBlock =  $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+$imagewidth=200;
+$imageheight=200;
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$imageHelper  = $objectManager->get('\Magento\Catalog\Helper\Image');
+$customeField = $block->getCustomFieldCollection();
+?>
+<div class="page-main-actions">
+    <div class="page-actions">
+        <div class="page-actions-inner">
+            <div class="page-actions-buttons">
+                <button id="back" onclick="location.href = '<?php echo $block->getUrl('*/*/'); ?>'" class="action- scalable back" data-ui-id="back-button" type="button" title="<?php echo __('Back'); ?>"><span><?php echo __('Back'); ?></span> </button>
+                <button id="reset" class="action- scalable reset" data-ui-id="reset-button" onclick="location.reload();" type="button" title="Reset"><span><?php echo __('Reset'); ?></span> </button>
+                <button id="save_and_continue_rma" class="action- scalable save ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only rmaedit-save-continue" type="button" title="Save and Continue Edit"><span><?php echo __('Save and Continue Edit'); ?></span> </button>
+                <button id="save_rma" class="action- scalable save primary ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only rmaedit-save" type="button" title="Save"><span><?php echo __('Save'); ?></span> </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="order-details" class="order-details-section">
+<form id ="new_form_rma" class="admin__scope-old MultiFile-intercepted" style="width: 100%"
+      enctype="multipart/form-data" action="<?php echo $block->getFormAction(); ?>"
+      method="post"
+      data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>"
+      data-mage-init='{"validation":{}}'>
+    <input type="hidden" name="form_key" value='<?php echo $block->getFormKey(); ?>' />
+    <input type="hidden" name="order_id" value='<?php echo $orderId; ?>' />
+    <input type="hidden" id="rma_back" name="back" value='0' />
+    <input type="hidden" name="currnt_cust_id" value='<?php echo $customerId; ?>' />
+    <input type="hidden" name="customer_name" value="<?php echo $shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname(); ?>" />
+    <div class="page-title-wrapper">
+        <h1 class="page-title">
+            <span class="base" data-ui-id="page-title-wrapper">New Return for Order #<?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getIncrementId()) ?></span>    </h1>
+    </div>
+<div class="block-box">
+    <div class="block request-form">
+        <div class="box box-rma-information">
+            <fieldset class="fieldset admin__fieldset">
+                <legend class="admin__legend legend">
+                    <span>Request Information</span>
+                </legend>
+                <div class="block-content box-rma-address">
+                    <table width="100%">
+                        <tbody>
+                            <?php
+                                $orderDate = ($orderData->getCreatedAt()) ? date('M d, Y', strtotime($orderData->getCreatedAt())) : 'N / A';
+                            ?>
+                            <tr>
+                                <td><strong>Order # :</strong></td>
+                                <td>
+                                <a  href="<?php echo $block->getUrl('sales/order/view/order_id/'.$orderData->getEntityId().'/'); ?>" target="_blank">
+                                <?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getIncrementId()) ?>
+                                </a> at <?php echo $orderDate; ?>  (<?php echo $block->getPriceFormat($orderData->getGrandTotal()); ?> )</td>
+                            </tr>
+                            <tr>
+                                <td valign="top"><strong>Department name:</strong></td>
+                                <td valign="top"><?php echo $block->getDepartmentName(); ?></td>
+                            </tr>
+                            <tr>
+                                <td valign="top"><strong>Department Email:</strong></td>
+                                <td valign="top"><?php echo $block->getDepartmentEmail(); ?></td>
+                            </tr>
+                            <tr>
+                                <td valign="top"><strong>Department Address:</strong></td>
+                                <td valign="top"><pre><?php echo $block->escapeHtml($block->getDepartmentAddress()); ?></pre></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="block order-ship-address">
+        <div class="box box-rma-shipping-information">
+            <fieldset class="fieldset admin__fieldset">
+                <legend class="admin__legend legend">
+                    <span>Order Shipping Address:</span>
+                </legend>
+                <div class="box-content">
+                    <table width="100%">
+                        <tbody>
+                            <tr>
+                                <th align="left">Customer Name:</th>
+                                <td align="left">
+                                     <a  href="<?php echo $customer_link; ?>" target="_blank">
+                                    <?php /* @escapeNotVerified */ echo $block->escapeHtml($customerName); ?>  
+                                     </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th align="left">Email Address:</th>
+                                <td align="left">
+                                    <?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getCustomerEmail()); ?></td>
+                            </tr>
+                            <tr>
+                                    <td valign="top"><strong>Customer Orders :</strong></td>
+                                    <td><?php /* @escapeNotVerified */ echo $block->escapeHtml("Total ". $block->getOrders($customerId)->count()." Orders by Customer"); ?>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th valign="top" align="left"><strong>Address :</strong></th>
+                                <td valign="top" align="left"><?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getStreet()[0]); ?><br>
+                                    <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getCity()); ?>,  <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getRegion()); ?>, <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getPostCode()); ?><br>
+                                    <?php /* @escapeNotVerified */ echo $block->escapeHtml($block->getCountryname($shippingAddress->getCountryId())); ?><br>
+                                    T: <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getTelephone()); ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div class="block-box rma-view">
+    <div class="block item-in-this-order">
+        <fieldset class="fieldset admin__fieldset">
+            <legend class="admin__legend legend">
+                <span>Items in this order</span>
+            </legend>
+            <div class="block-content ui-rma-items">
+                <input type="hidden" name="order_id" value="<?php echo $orderId; ?>" />
+                <input type="hidden" name="currnt_cust_id" value="<?php echo $block->getCustomerId(); ?>" />
+                <?php
+                foreach ($orderItems as $item) { ?>
+                    <div class="rma-one-item">
+                        <div class="item-description">
+                            <?php
+                                $returnCheck  = $block->getReturnQty($item->getProductId(), $orderId);
+                                $availability =   $returnCheck >= $item->getQtyOrdered() ? true : false ;
+                                $orderQty = $item->getQtyOrdered();
+                                $maxReturnQty = $orderQty - $returnCheck;
+                                $rmaExixtIds  = $block->getExistRmaIds($item->getProductId(), $orderId);
+                            ?>
+                            <div class="admin__field admin__field-option">
+                                <input id="items[<?php echo $item->getItemId() ?>][is_return]" type="checkbox" name="items[<?php echo $item->getItemId() ?>][is_return]" data-item-id="<?php echo $item->getItemId() ?>" class="rma-item-checkbox admin__control-checkbox" value="1" <?php if ($availability) { echo "disabled";} ?> >
+                                <?php
+                                $product = $block->getLoadProduct($item->getProductId());
+                                $imageUrl =  $imageHelper->init($product, 'small_image', ['type'=>'small_image'])->keepAspectRatio(true)->resize('85', '85')->getUrl(); ?>
+                                <label for="items[<?php echo $item->getItemId() ?>][is_return]" class="admin__field-label"><?php echo $item->getName(); ?></label>
+                            </div>
+                            
+                        </div>
+                        <?php if ($availability) { ?> 
+                        <div class="item-options">
+                            <div class="message info">
+                                <span>
+                                    <p>There are no items for this product that can be returned.</p>
+                                    <p>Another RMA for this product: <a href="#" target="_blank">#100000029</a></p>
+                                </span>
+                            </div>
+                        </div>
+                        <?php } ?>
+                        <?php if (!$availability && $returnCheck > 0) { ?> 
+                        <div class="item-options">
+                            <div class="message info">
+                                <span>
+                                    <p>Another RMA for this product: 
+                                        <?php foreach ($rmaExixtIds as $rmaExixtIds) { ?>
+                                                <a href="#" target="_blank">#<?php echo "000000".$rmaExixtIds; ?></a>
+                                        <?php   } ?>
+                                    </p>  
+                                </span>
+                            </div>
+                        </div>
+                        <?php } ?>
+                        <input type="hidden" name="items[<?php echo $item->getItemId() ?>][product_id]" value="<?php echo $item->getProductId(); ?>" />
+                        <?php if ($maxReturnQty > 0) { ?>
+                        <div id="item<?php echo $item->getItemId() ?>" class="item-options" style="display:none;" >
+                            
+                            <table class="admin__control-table" data-role="items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product Name</th>
+                                        <th>SKU</th>
+                                        <th>Qty</th>
+                                        <th>Quantity to return</th>
+                                        <th>Reason</th>
+                                        <th>Condition</th>
+                                        <th>Resolution</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src="<?php echo $imageUrl; ?>" alt ="" title="" />
+                                        </td>
+                                        <td>
+                                            <?php echo $item->getName(); ?>
+                                        </td>
+                                        <td><?php echo $item->getSku(); ?></td>
+                                        <td>
+                                        <table class="qty-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>returned</td>
+                                                        <td><?php echo $returnCheck; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Ordered</td>
+                                                        <td><?php echo (int) $orderQty; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Available</td>
+                                                        <td><?php echo $maxReturnQty; ?></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <div class="a-left">
+                                                <input name="items[<?php echo $item->getItemId() ?>][qty_requested]" id="qty_requested<?php echo $item->getItemId() ?>" class="admin__control-text" type="number" min="1" max="<?php  echo $maxReturnQty; ?>" style="width:100px;text-align: left;" value="1" data-validate="{'required-number':'true'}" aria-required="true">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <select class="admin__control-select" name="items[<?php echo $item->getItemId() ?>][reason_id]" id="reason_id<?php echo $item->getItemId() ?>" data-validate="{required:true}" aria-required="true">
+                                                <?php $reasons = $block->getReasons(); ?> 
+                                                
+                                                <?php foreach ($reasons as $reason) { ?>
+                                                     <option value="<?php echo $reason->getReasonsId(); ?>">
+                                                            <?php echo $reason->getTitle(); ?>
+                                                     </option>
+                                                <?php  } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="admin__control-select" name="items[<?php echo $item->getItemId() ?>][condition_id]" id="condition_id<?php echo $item->getItemId() ?>" data-validate="{required:true}" aria-required="true">
+                                                <?php $conditions = $block->getConditions(); ?> 
+                                                <?php foreach ($conditions as $condition) { ?>
+                                                     <option value="<?php echo $condition->getConditions_id(); ?>">
+                                                            <?php echo $condition->getTitle(); ?>
+                                                     </option>
+                                                <?php  } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="admin__control-select" name="items[<?php echo $item->getItemId() ?>][resolution_id]" id="resolution_id<?php echo $item->getItemId() ?>" data-validate="{required:true}" aria-required="true">
+                                                <?php $resolutions = $block->getResolutions(); ?> 
+                                                
+                                                <?php foreach ($resolutions as $resolution) { ?>
+                                                     <option value="<?php echo $resolution->getResolutionId(); ?>">
+                                                            <?php echo $resolution->getTitle(); ?>
+                                                     </option>
+                                                <?php  } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <?php  } ?> 
+                    </div>
+                <?php } ?>
+            </div>
+        </fieldset>
+    </div>
+    <div class="block additional-info">
+        <fieldset class="fieldset admin__fieldset">
+            <legend class="admin__legend legend">
+                <span>Additional Information</span>
+            </legend>
+            <div class="block-content">
+                <fieldset class="fieldset admin__fieldset">
+                    <?php
+                        //echo "<pre>"; print_r($customeField->getData());
+                    foreach ($customeField as $fields) {
+                        $frontend_input = $fields->getFrontendInput();
+                        switch ($frontend_input) {
+                            case "select":
+                                ?>
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>">
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control" id="<?php echo $fields->getCode(); ?>">                                      <?php $dropdown =
+                                    $block->unserializeValue($fields->getDropdownOption()); ?>
+                                        <select class="select admin__control-select" name="cutome[<?php echo $fields->getCode(); ?>]">
+                                            <?php foreach ($dropdown as $options) { ?> 
+                                                    <option value="<?php echo $options['admin'] ?>" ><?php echo $options['admin'] ?></option>                  
+                                                <?php } ?>
+                                        </select>
+
+                                    </div> 
+                                    </div>    
+                                    <?php
+                                break;
+                            case "checkbox":
+                                ?>
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>" >
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control">
+                                        <input id="<?php echo $fields->getCode(); ?>" name="cutome[<?php echo $fields->getCode(); ?>]" value="1" type="checkbox">
+                                    </div>
+                                    </div>
+                                    <?php
+                                break;
+                            case "text":
+                                ?>
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>">
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control">
+                                        <input id="<?php echo $fields->getCode(); ?>" name="cutome[<?php echo $fields->getCode(); ?>]" value="" type="text" class=" input-text admin__control-text">   
+                                    </div>
+                                    </div>
+
+                                    <?php
+                                break;
+                            case "boolean":
+                                ?>
+                                <div class="admin__field field field-<?php echo $fields->getCode(); ?>">
+                                    <label class="label admin__field-label" for="<?php echo $fields->getCode(); ?>">
+                                        <span><?php echo $fields->getTitle(); ?></span>
+                                    </label>
+                                    <div class="admin__field-control control" id="<?php echo $fields->getCode(); ?>">           
+                                        <select class="select admin__control-select" name="cutome[<?php echo $fields->getCode(); ?>]">
+                                            <option value="1">Yes</option>
+                                            <option value="2">No</option>
+                                        </select>
+                                    </div> 
+                                    </div> 
+                                    <?php
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    ?>
+                </fieldset>
+            </div>
+        </fieldset>
+    </div>
+    <div class="block block-add-msg" >
+        <fieldset class="fieldset admin__fieldset"  id="item_fieldset">
+            <legend class="admin__legend legend">
+                <span>Add Message</span>
+            </legend>
+            <div class="block-content">
+                    <div class="admin__field field field required">
+                        <label class="label admin__field-label">
+                            <span>Status</span>
+                        </label>
+                        <div class="admin__field-control control">
+                            <select class="select admin__control-select" name="adminstatus" data-validate="{required:true}">
+                                <option value="">-- Select a Status --</option>
+                                <?php
+                                $statusDrop = $block->getStatusDropdown();
+                                foreach ($statusDrop as $option):?>
+                                    <option value="<?php echo $option['value'] ?>">
+                                        <?php echo $option['label'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="admin__field field comment required">
+                        <label class="label admin__field-label">
+                            <span>Message</span>
+                        </label>
+                        <div class="admin__field-control control">
+                            <textarea class="admin__control-textarea" name="comment" id="comment" class="input" data-validate="{required:true}"></textarea>
+                        </div>
+                    </div>
+                <div class="admin__field">
+                    <div class="order-history-comments-options">
+                        <div class="admin__field admin__field-option">
+                            <input name="commentdata[is_customer_notified]" type="checkbox" id="commentdata_notify" class="admin__control-checkbox" value="1">
+                            <label class="admin__field-label" for="history_notify">
+                                Notify Customer by Email                            
+                            </label>
+                        </div>
+                        <!--<div class="admin__field admin__field-option">
+                        <input name="commentdata[is_visible_on_front]" type="checkbox" id="commentdata_visible" class="admin__control-checkbox" value="1">
+                            <label class="admin__field-label" for="history_visible">
+                                Visible on Storefront                        
+                            </label>
+                        </div>-->
+                    </div>
+                </div>
+                    <div class="field upload">
+                        <label class="label">
+                            <span>Attach files</span>
+                        </label>
+                        <?php $fileSize  = ($block->getFileSize()) ? $block->getFileSize(): 10000000 ; ?>
+                        <div class="upload-wrapper" data-bind="scope: 'uploader'">
+                            <!-- ko template: getTemplate() --><!-- /ko -->
+                        </div>
+                        <script type="text/x-magento-init">
+                            {
+                               ".upload-wrapper": {
+                                   "Magento_Ui/js/core/app": {
+                                       "components": {
+                                           "uploader": {
+                                               "component": "Magento_Ui/js/form/element/file-uploader",
+                                               "template": "ui/form/element/uploader/uploader",
+                                               "previewTmpl": "Softnoesis_Rma/form/element/uploader/preview",
+                                               "dataScope": "custom.image",
+                                               "isLoading": false,
+                                               "maxFileSize": <?php echo $fileSize; ?>,
+                                               "isMultipleFiles": true,
+                                               "uploaderConfig": {
+                                                    "url": "<?php echo $block->getUrl('magerma/image/upload', ['_current' => true, '_use_rewrite' => true]); ?>"
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                            }
+                        </script>
+                    </div>
+            </div>
+        </fieldset>
+    </div>
+</div> 
+<script>
+    require(['jquery','mage/mage'], function ($) {
+        var dataForm = $('#return-details-form');
+        dataForm.mage('validation', {});
+        
+        $(document).ready(function () {
+            $(".rma-item-checkbox").change(function() {
+                var item_id = $(this).data('item-id');
+                if(this.checked) {
+                   $('#item'+item_id).show();
+                } else {
+                   $('#item'+item_id).hide(); 
+                }
+            });
+        });
+    });
+</script>
+</form>
+</div>

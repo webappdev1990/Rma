@@ -1,0 +1,58 @@
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<!--@subject {{trans "%store_name: New Return # %rma_id"
+    store_name=$store.getFrontendName() rma_id=$rma.getRmaId()}} @-->
+<!--@vars {
+"store url=\"customer\/account\/\"":"Customer Account URL",
+"template config_path=\"design\/email\/footer_template\"":"Email Footer Template",
+"template config_path=\"design\/email\/header_template\"":"Email Header Template",
+"var logo_alt":"Email Logo Image Alt",
+"var logo_url":"Email Logo Image URL",
+"var return_address|raw":"Return Address",
+"var rma.getCreatedAt()":"Return Created At (datetime)",
+"var rma.getRmaId()":"Return Id",
+"var rma.getAdminstatus()":"Return Status",
+"var formattedShippingAddress|raw":"Shipping Address",
+"var store.getFrontendName()":"Store Name",
+"store url=\"\"":"Store URL"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p class="greeting">{{trans "%name," name=$order.getCustomerName()}}</p>
+<p>
+    {{trans "We received your return request. You will be notified when your request is reviewed."}}
+    {{trans "If you have any questions about your return, please contact us at "}}{{config path='trans_email/ident_sales/email'}}
+</p>
+
+<h1>
+    {{trans
+    "Your Return #%rma_id - %status"
+
+    rma_id=$rma.getRmaId() status=$status
+    }}
+</h1>
+<p>{{trans "Placed on %created_at" created_at=$rma.getCreatedAt()}}</p>
+
+<table class="order-details" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td class="address-details">
+            <h3>{{trans "Shipping Address"}}</h3>
+            <p>{{var formattedShippingAddress|raw}}</p>
+        </td>
+        <td class="address-details">
+            <h3>{{trans "Return Address"}}</h3>
+            <p>{{var return_address|raw}}</p>
+        </td>
+    </tr>
+</table>
+<br/>
+
+{{template config_path="design/email/footer_template"}}

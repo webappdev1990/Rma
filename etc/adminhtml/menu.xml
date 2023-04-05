@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
+    <menu>
+        <add id="Softnoesis_Rma::rma" title="RMA" module="Softnoesis_Rma" sortOrder="35" resource="Softnoesis_Rma::rma_root"/>
+
+        <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::rmalist" title="Rma Listing" 
+            module="Softnoesis_Rma" sortOrder="5" action="magerma/rmas" resource="Softnoesis_Rma::rmalist" parent="Softnoesis_Rma::rma"/>
+
+        <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::reasons" 
+            title="Return Reasons" module="Softnoesis_Rma" sortOrder="10" action="magerma/reasons" 
+            resource="Softnoesis_Rma::reasons" parent="Softnoesis_Rma::rma"/>
+
+        <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::conditions" 
+            title="Product States" module="Softnoesis_Rma" sortOrder="15" action="magerma/conditions" 
+            resource="Softnoesis_Rma::conditions" parent="Softnoesis_Rma::rma"/>
+
+        <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::resolutions" 
+            title="Resolutions" module="Softnoesis_Rma" sortOrder="20" action="magerma/resolutions" 
+            resource="Softnoesis_Rma::resolutions" parent="Softnoesis_Rma::rma"/>
+
+
+        <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::rmaattributes" 
+            title="Rma Attributes" module="Softnoesis_Rma" sortOrder="25" 
+            resource="Softnoesis_Rma::rmaattributes" parent="Softnoesis_Rma::rma"/>
+
+         <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::statuses" 
+            title="Statuses" module="Softnoesis_Rma" sortOrder="30" action="magerma/statuses" 
+            resource="Softnoesis_Rma::statuses" parent="Softnoesis_Rma::rma"/>
+
+         <add dependsOnConfig="magerma/general/enable" id="Softnoesis_Rma::customfield" 
+            title="Additional Fields" module="Softnoesis_Rma" sortOrder="35" action="magerma/customfield" 
+            resource="Softnoesis_Rma::customfield" parent="Softnoesis_Rma::rma"/>  
+
+            <add id="Softnoesis_Rma::settings" title="Configuration" module="Softnoesis_Rma" sortOrder="40" 
+            action="adminhtml/system_config/edit/section/magerma" resource="Softnoesis_Rma::settings" 
+            parent="Softnoesis_Rma::rma"/>
+       
+    </menu>
+</config>

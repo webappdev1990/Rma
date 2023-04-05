@@ -1,0 +1,32 @@
+@media all {
+	body.print-popup-body {
+		color: #333333 !important;
+		font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+		font-style: normal !important;
+	}
+	body.print-popup-body .block-content .box-rma-address table tr th,
+	body.print-popup-body .block-content .box-rma-information table tr th {
+		text-align: left !important;
+		width: 35% !important;
+	}
+	body.print-popup-body .block .block-title strong {
+		border-bottom: 1px solid #c6c6c6 !important;
+		margin-bottom: 15px !important;
+		padding-bottom: 10px !important;
+		font-size: 1.4rem !important;
+		font-weight: 300 !important;
+		width: 100% !important;
+		margin-top: 20px !important;
+		display: inline-block !important;
+	}
+	body.print-popup-body table > thead > tr > th, body.print-popup-body table > tbody > tr > th,  body.print-popup-body table > tfoot > tr > th, body.print-popup-body table > thead > tr > td, body.print-popup-body table > tbody > tr > td, body.print-popup-body table > tfoot > tr > td{
+		padding: 5px;
+	}
+	body.print-popup-body table > tbody > tr > th, body.print-popup-body table > tfoot > tr > th, body.print-popup-body table > tbody > tr > td, body.print-popup-body table > tfoot > tr > td{
+		vertical-align: top;
+	}
+	body.print-popup-body table {
+	    border-collapse: collapse;
+	    border-spacing: 0;
+	}
+}

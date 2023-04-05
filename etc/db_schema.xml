@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+   <table name="md_rma_statuses" resource="default" engine="innodb" comment="Rma Statues Table">
+       <column xsi:type="int" name="status_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Status ID"/>
+       <column xsi:type="varchar" name="title" length="250" nullable="false" comment="Status Title"/>
+       <column xsi:type="varchar" name="code" length="250" nullable="false" comment="Code"/>
+       <column xsi:type="int" name="sort_order" nullable="false" identity="false" comment="Sort Order"/>
+       <column xsi:type="smallint" name="is_active" nullable="false" identity="false" comment="Is Active"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="status_id"/>
+       </constraint>
+       <index referenceId="md_rma_statuses_ID" indexType="btree">
+           <column name="status_id"/>
+       </index>
+       <index referenceId="md_rma_statuses_title" indexType="fulltext">
+           <column name="title"/>
+       </index>
+   </table>
+
+    <table name="md_rma_reasons" resource="default" engine="innodb" comment="Rma Reasons Table">
+       <column xsi:type="int" name="reasons_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Reasons Id"/>
+       <column xsi:type="varchar" name="title" length="250" nullable="false" comment="Reasons Title"/>
+       <column xsi:type="int" name="sort_order" nullable="false" identity="false" comment="Sort Order"/>
+       <column xsi:type="smallint" name="is_active" nullable="false" identity="false" comment="Is Active"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="reasons_id"/>
+       </constraint>
+       <index referenceId="md_rma_reasons_ID" indexType="btree">
+           <column name="reasons_id"/>
+       </index>
+       <index referenceId="md_rma_reasons_title" indexType="fulltext">
+           <column name="title"/>
+       </index>
+   </table>
+
+   <table name="md_rma_conditions" resource="default" engine="innodb" comment="Rma Conditions Table">
+       <column xsi:type="int" name="conditions_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Conditions Id"/>
+       <column xsi:type="varchar" name="title" length="250" nullable="false" comment="Conditions Title"/>
+       <column xsi:type="int" name="sort_order" nullable="false" identity="false" comment="Sort Order"/>
+       <column xsi:type="smallint" name="is_active" nullable="false" identity="false" comment="Is Active"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="conditions_id"/>
+       </constraint>
+       <index referenceId="md_rma_conditions_ID" indexType="btree">
+           <column name="conditions_id"/>
+       </index>
+       <index referenceId="md_rma_conditions_title" indexType="fulltext">
+           <column name="title"/>
+       </index>
+   </table>
+
+   <table name="md_rma_customfield" resource="default" engine="innodb" comment="Rma Customfield Table">
+       <column xsi:type="int" name="customfield_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Custom Field Id"/>
+       <column xsi:type="varchar" name="title" length="250" nullable="false" comment="Customfield Title"/>
+       <column xsi:type="varchar" name="code" length="250" nullable="false" comment="Code"/>
+       <column xsi:type="int" name="sort_order" nullable="false" identity="false" comment="Sort Order"/>
+       <column xsi:type="varchar" name="frontend_input" length="50" comment="Frontend Input"/>
+       <column xsi:type="text" name="dropdown_option" comment="Options"/>
+       <column xsi:type="smallint" name="is_active" nullable="false" identity="false" comment="Is Active"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="customfield_id"/>
+       </constraint>
+       <index referenceId="md_rma_customfield_ID" indexType="btree">
+           <column name="customfield_id"/>
+       </index>
+       <index referenceId="md_rma_customfield_title" indexType="fulltext">
+           <column name="title"/>
+       </index>
+   </table>
+
+   <table name="md_rma_resolutions" resource="default" engine="innodb" comment="Rma Resolutions Table">
+       <column xsi:type="int" name="resolution_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Resolution Id"/>
+       <column xsi:type="varchar" name="title" length="250" nullable="false" comment="Resolution Title"/>
+       <column xsi:type="varchar" name="code" length="250" nullable="false" comment="Code"/>
+       <column xsi:type="int" name="sort_order" nullable="false" identity="false" comment="Sort Order"/>
+       <column xsi:type="smallint" name="is_active" nullable="false" identity="false" comment="Is Active"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="resolution_id"/>
+       </constraint>
+        <index referenceId="md_rma_statuses_ID" indexType="btree">
+           <column name="resolution_id"/>
+       </index>
+       <index referenceId="md_rma_resolutions_title" indexType="fulltext">
+           <column name="title"/>
+       </index>
+   </table> 
+
+   <table name="md_rma_list" resource="default" engine="innodb" comment="Rma List Table">
+       <column xsi:type="int" name="rma_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Rma Id"/>
+       <column xsi:type="varchar" name="title" length="250" nullable="false" comment="List Title"/>
+       <column xsi:type="varchar" name="customer_id" length="250" nullable="false" comment="Customer Id"/>
+       <column xsi:type="varchar" name="confirm_shipping" length="250" nullable="false" comment="Confirm Shipping"/>
+       <column xsi:type="varchar" name="order_id" length="250" nullable="false" comment="Order Id"/>
+       <column xsi:type="text" name="custome_fields" nullable="false" comment="Custome Fields"/>
+       <column xsi:type="smallint" name="adminstatus" nullable="false" identity="false" comment="Admin Status"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="rma_id"/>
+       </constraint>
+        <index referenceId="md_rma_list_ID" indexType="btree">
+           <column name="rma_id"/>
+       </index>
+       <index referenceId="md_rma_list_title" indexType="fulltext">
+           <column name="title"/>
+       </index>
+   </table> 
+
+    <table name="md_rma_comments" resource="default" engine="innodb" comment="Rma Comments Table">
+       <column xsi:type="int" name="comment_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Comment Id"/>
+       <column xsi:type="int" name="rma_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Rma Id"/>
+       <column xsi:type="text" name="comments" nullable="false" comment="Comments"/>
+       <column xsi:type="text" name="comment_image" nullable="false" comment="Comment Image"/>
+       <column xsi:type="varchar" name="commentside" length="250" nullable="false" comment="Comment Side"/>
+       <column xsi:type="varchar" name="by" length="100" nullable="false" comment="By"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="comment_id"/>
+       </constraint>
+        <index referenceId="md_rma_comments_ID" indexType="btree">
+           <column name="comment_id"/>
+       </index>
+       <index referenceId="md_rma_comments_rma_id" indexType="btree">
+           <column name="rma_id"/>
+       </index>
+       <constraint xsi:type="foreign" referenceId="md_rma_comments_foregin_keys" table="md_rma_comments"
+           column="rma_id" referenceTable="md_rma_list" referenceColumn="rma_id"
+           onDelete="CASCADE"/>
+   </table> 
+
+    <table name="md_rma_products" resource="default" engine="innodb" comment="Rma Products Table">
+       <column xsi:type="int" name="rmaprod_id" padding="10" unsigned="true" nullable="false" identity="true" comment="rma prodct Id"/>
+       <column xsi:type="int" name="rma_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Rma Id"/>
+       <column xsi:type="int" name="order_id" nullable="false" comment="Order Id"/>
+       <column xsi:type="int" name="product_id" nullable="false" comment="Product Id"/>
+       <column xsi:type="int" name="qty" nullable="false" comment="Qty"/>
+       <column xsi:type="smallint" name="reason" nullable="false" identity="false" comment="Reason"/>
+       <column xsi:type="smallint" name="condition" nullable="false" identity="false" comment="Condition"/>
+       <column xsi:type="smallint" name="resolution" nullable="false" identity="false" comment="Resolution"/>
+       <column xsi:type="int" name="status" nullable="false" comment="Status Id"/>
+       <column xsi:type="float" name="total" nullable="false" comment="Total"/>
+       <column name="created_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="false" comment="created_at"/>
+       <column name="updated_at" nullable="false" xsi:type="timestamp" default="CURRENT_TIMESTAMP" on_update="true" comment="updated_at"/>
+       <constraint xsi:type="primary" referenceId="PRIMARY">
+           <column name="rmaprod_id"/>
+       </constraint>
+        <index referenceId="md_rma_products_ID" indexType="btree">
+           <column name="rmaprod_id"/>
+       </index>
+       <index referenceId="md_rma_comments_rma_id" indexType="btree">
+           <column name="rma_id"/>
+       </index>
+       <constraint xsi:type="foreign" referenceId="md_rma_products_foregin_keys" table="md_rma_products"
+           column="rma_id" referenceTable="md_rma_list" referenceColumn="rma_id"
+           onDelete="CASCADE"/>
+    </table> 
+
+
+</schema>

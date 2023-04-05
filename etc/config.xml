@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <magerma>
+            <general>
+                <enable>1</enable>
+                <allow_guest_user>0</allow_guest_user>
+                <adminstatus>1</adminstatus>
+                <confirm_shipping_status>3</confirm_shipping_status>
+                <return_confirmation_label>Shipping Confirmation</return_confirmation_label>
+                <return_confirmation_text>Having clicked "Yes", you won't be able to cancel RMA or make any changes.</return_confirmation_text>
+            </general>
+            <rma_policy>
+                <return_period>365</return_period>
+                <max_attachment_size>2</max_attachment_size>
+            </rma_policy>
+            <rma_department>
+                <department_name>Rma store</department_name>
+                <department_email>sales@example.com</department_email>
+                <department_address>USA</department_address>
+            </rma_department>
+        </magerma>
+    </default>
+</config>

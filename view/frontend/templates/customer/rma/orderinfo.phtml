@@ -1,0 +1,204 @@
+<?php
+$orderId  = $block->getOrderId();
+$orderData = $block->getOrderDetails($orderId);
+$shippingAddress = $orderData->getShippingAddress();
+$orderItems = $orderData->getAllVisibleItems();
+$customeField = $block->getCustomFieldCollection();
+//echo "<pre>"; print_r($customeField->getData()); exit;
+$imageBlock =  $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+?>
+
+<div id="order-details">
+
+<div class="page-title-wrapper">
+    <h1 class="page-title">
+        <span class="base" data-ui-id="page-title-wrapper">New Return for Order #<?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getIncrementId()) ?></span>    </h1>
+</div>
+
+<div class="block">
+    <div class="block-title">
+        <strong>Request Information</strong>
+    </div>
+    <div class="block-content">
+        <div class="box box-rma-information">
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <th>Customer Name:</th>
+                        <td>
+                            <?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getCustomerFirstname() .' '. $orderData->getCustomerLastname()); ?>                   
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Email Address:</th>
+                        <td>
+                            <?php /* @escapeNotVerified */ echo $block->escapeHtml($orderData->getCustomerEmail()); ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box box-rma-shipping-information">
+            <strong class="box-title">Order Shipping Address:</strong>
+
+            <div class="box-content">
+                <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getFirstname().' '. $shippingAddress->getLastname()); ?><br>
+                <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getStreet()[0]); ?><br>
+                <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getCity()); ?>,  <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getRegion()); ?>, <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getPostCode()); ?><br>
+                <?php /* @escapeNotVerified */ echo $block->escapeHtml($block->getCountryname($shippingAddress->getCountryId())); ?><br>
+                T: <?php /* @escapeNotVerified */ echo $block->escapeHtml($shippingAddress->getTelephone()); ?>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="block">
+    <div class="block-title">
+        <strong>Items in this order</strong>
+    </div>
+    <div class="block-content ui-rma-items">
+        <input type="hidden" name="order_id" value="<?php echo $orderId; ?>" />
+        <input type="hidden" name="currnt_cust_id" value="<?php echo $block->getCustomerId(); ?>" />
+        <?php
+        foreach ($orderItems as $item) { ?>
+            <div class="rma-one-item">
+            <div class="item-description">
+                <?php
+                    $returnCheck  = $block->getReturnQty($item->getProductId(), $orderId);
+                    $availability =   $returnCheck >= $item->getQtyOrdered() ? true : false ;
+                    $orderQty = $item->getQtyOrdered();
+                    $maxReturnQty = $orderQty - $returnCheck;
+                    $rmaExixtIds  = $block->getExistRmaIds($item->getProductId(), $orderId);
+                ?>
+                <input type="checkbox" name="items[<?php echo $item->getItemId() ?>][is_return]" data-item-id="<?php echo $item->getItemId() ?>" class="rma-item-checkbox" value="1" <?php if ($availability) {
+                    echo "disabled";
+                                                   } ?> >
+                <?php
+                $product = $block->getLoadProduct($item->getProductId());
+                $productImage = $imageBlock->getImage($product, 'product_small_image'); ?>
+                <?php echo $productImage->toHtml();  ?>
+
+                <b><?php echo $item->getName(); ?></b>
+            </div>
+                <?php if ($availability) { ?> 
+                <div class="item-options">
+                    <div class="message info">
+                        <span>
+                            <p>There are no items for this product that can be returned.</p>
+                            <p>Another RMA for this product: 
+                                <?php foreach ($rmaExixtIds as $rmaExixtIds) { ?>
+                                        <a href="<?php /* @escapeNotVerified */ echo $block->getUrl('magerma/customer/rmaview').'rma_id/'.$rmaExixtIds; ?>" target="_blank">#<?php echo "000000".$rmaExixtIds; ?></a>
+                                <?php   } ?>
+                            </p>  
+                        </span>
+                    </div>
+                </div>
+                <?php } ?>
+                <?php if (!$availability && $returnCheck > 0) { ?> 
+                <div class="item-options">
+                    <div class="message info">
+                        <span>
+                            <p>Another RMA for this product: 
+                                <?php foreach ($rmaExixtIds as $rmaExixtIds) { ?>
+                                        <a href="<?php /* @escapeNotVerified */ echo $block->getUrl('magerma/customer/rmaview').'rma_id/'.$rmaExixtIds; ?>" target="_blank">#<?php echo "000000".$rmaExixtIds; ?></a>
+                                <?php   } ?>
+                            </p>  
+                        </span>
+                    </div>
+                </div>
+                <?php } ?>
+                <input type="hidden" name="items[<?php echo $item->getItemId() ?>][product_id]" value="<?php echo $item->getProductId(); ?>" />
+                <div id="item<?php echo $item->getItemId() ?>" class="item-options" style="display:none;" >
+                <fieldset class="fieldset">
+                    <div class="field"> 
+                        <label class="label">
+                                <span>Quantity returned</span>
+                        </label>
+                        <div class="control">
+                            <span class="total-qty returned" id="total-qty"><?php echo $returnCheck; ?></span>
+                            <span> and remaining <?php echo $maxReturnQty; ?> items.</span>
+                        </div>
+                    </div>
+                    <div class="field required">
+                        <label class="label">
+                            <span>Quantity to return</span>
+                        </label>
+                        <div class="control">
+                            
+                            <input name="items[<?php echo $item->getItemId() ?>][qty_requested]" id="qty_requested<?php echo $item->getItemId() ?>" class="input-text" type="number" min="1" max="<?php  echo $maxReturnQty; ?>" style="width:60px;text-align: center;" value="" data-validate="{'required-number':'true'}" aria-required="true">
+                        </div>
+                    </div>
+                    <div class="field required">
+                        <label class="label">
+                            <span>Reason</span>
+                        </label>
+                        <div class="control">
+                            <select name="items[<?php echo $item->getItemId() ?>][reason_id]" id="reason_id<?php echo $item->getItemId() ?>" data-validate="{required:true}" aria-required="true">
+                                <?php $reasons = $block->getReasons(); ?> 
+                                <option value="">-- Select a Reason --</option>
+                                <?php foreach ($reasons as $reason) { ?>
+                                     <option value="<?php echo $reason->getReasonsId(); ?>">
+                                            <?php echo $reason->getTitle(); ?>
+                                     </option>
+                                <?php  } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field required">
+                        <label class="label">
+                            <span>Product State</span>
+                        </label>
+
+                        <div class="control">
+                            <select name="items[<?php echo $item->getItemId() ?>][condition_id]" id="condition_id<?php echo $item->getItemId() ?>" data-validate="{required:true}" aria-required="true">
+                                <option value="">-- Select a Condition --</option>
+                                <?php $conditions = $block->getConditions(); ?> 
+                                <?php foreach ($conditions as $condition) { ?>
+                                     <option value="<?php echo $condition->getConditions_id(); ?>">
+                                            <?php echo $condition->getTitle(); ?>
+                                     </option>
+                                <?php  } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field required">
+                        <label class="label">
+                            <span>Resolution</span>
+                        </label>
+
+                        <div class="control">
+                            <select name="items[<?php echo $item->getItemId() ?>][resolution_id]" id="resolution_id<?php echo $item->getItemId() ?>" data-validate="{required:true}" aria-required="true">
+                                <?php $resolutions = $block->getResolutions(); ?> 
+                                <option value="">-- Select a Resolution --</option>
+                                <?php foreach ($resolutions as $resolution) { ?>
+                                     <option value="<?php echo $resolution->getResolutionId(); ?>">
+                                            <?php echo $resolution->getTitle(); ?>
+                                     </option>
+                                <?php  } ?>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <?php                                                                                                                                                                                                                  } ?>
+    </div>
+</div>
+<script>
+    require(['jquery','mage/mage'], function ($) {
+        var dataForm = $('#return-details-form');
+        dataForm.mage('validation', {});
+        $(document).ready(function () {
+            $(".rma-item-checkbox").change(function() {
+                var item_id = $(this).data('item-id');
+                if(this.checked) {
+                   $('#item'+item_id).show();
+                } else {
+                   $('#item'+item_id).hide(); 
+                }
+            });
+        });
+    });
+</script>
+</div>

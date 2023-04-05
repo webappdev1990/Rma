@@ -1,0 +1,117 @@
+<?php
+$customerOrders = $block->getOrders();
+if ($customerOrders->getData()) {
+    ?>
+
+<form class="form" style="width: 100%"
+      enctype="multipart/form-data" action="<?php echo $block->getUrl('magerma/customer/save'); ?>"
+      id="return-details-form"
+      method="post"
+      data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>"
+      >
+    <fieldset class="fieldset" style="width: 80%">
+        <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Request New Return') ?></span></legend><br />
+        <div class="field note no-label"><?php /* @escapeNotVerified */ echo __('Please, select an order') ?></div> 
+           <div class="field comment required">
+            <label class="label" for="comment"><span><?php /* @escapeNotVerified */ echo __('Order') ?></span></label>
+            <div class="control">
+                
+                <select name="order_id" id="order_id" title="<?php /* @escapeNotVerified */ echo __('Order') ?>" class="input-text" cols="5" rows="3" data-validate="{required:true}">
+                    <option value="">--Please select Order--</option>
+                    <?php foreach ($customerOrders as $order) { ?>
+                        <?php $orderDate = ($order->getCreatedAt()) ? date('M d, Y', strtotime($order->getCreatedAt())) : 'N / A'; ?>
+                    <option value="<?php echo $block->escapeHtml($order->getEntityId()); ?>">
+                        <?php  /* @escapeNotVerified */ echo $block->escapeHtml($order->getIncrementId()) . " At  " . $orderDate; ?>
+                    </option>
+                    <?php  } ?>
+                </select>
+            </div>
+        </div>
+    </fieldset>
+    <div class="actions-toolbar">
+        <div class="primary">
+            <input type="hidden" name="hideit" id="hideit" value="" />
+            
+            <button id="ajax-info-action" class="action button primary" title="<?php /* @escapeNotVerified */ echo __('View Order') ?>" type="button"><span><?php /* @escapeNotVerified */ echo __('View Order') ?></span></button>
+        </div>
+    </div>
+    </br>    
+
+<div id='orderInfo'> </div>
+    <div class="block additional-information" id ="additional-commant-box" style="display:none;"> 
+        <div class="block-title">
+            <strong>Additional Information</strong>
+        </div>
+        <div class="block-content">
+            <fieldset class="fieldset">
+                <div class="field">
+                    <div class="control">
+                        <textarea name="comment" id="comment" class="input validate-alphanum-with-spaces" data-validate="{required:true}"></textarea>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">
+                        <span>Attach files</span>
+                    </label>
+                        <?php $fileSize  = ($block->getFileSize()) ? $block->getFileSize(): 10000000 ; ?>
+                    <div class="upload-wrapper" data-bind="scope: 'uploader'">
+                        <!-- ko template: getTemplate() --><!-- /ko -->
+                    </div>
+                    <script type="text/x-magento-init">
+                        {
+                           ".upload-wrapper": {
+                               "Magento_Ui/js/core/app": {
+                                   "components": {
+                                       "uploader": {
+                                           "component": "Softnoesis_Rma/js/form/element/file-uploader",
+                                           "template": "ui/form/element/uploader/uploader",
+                                           "previewTmpl": "Softnoesis_Rma/form/element/uploader/preview",
+                                           "dataScope": "custom.image",
+                                           "isLoading": false,
+                                           "maxFileSize": <?php echo $fileSize; ?>,
+                                           "isMultipleFiles": true,
+                                           "uploaderConfig": {
+                                           "url": "<?php echo $block->getUrl('magerma/image/upload', ['_current' => true, '_use_rewrite' => true]); ?>"
+                                           }
+                                       }
+                                   }
+                               }
+                           }
+                        }
+                    </script>
+                </div>
+            </fieldset>
+            <div class="message info">
+                <span>
+                    <p>Allowed file types : jpg, jpeg, gif, png</p>
+                    <p>Maximum file size : <?php echo $fileSize / 1000000 ?> MB</p>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="buttons-set actions-toolbar" style="display:none;">
+        <div class="primary">
+            <button id="md_rma_button_submit" class="action save primary" title="Submit Request" type="submit"> 
+                    <span>Submit Request</span>
+            </button>
+        </div>
+    </div>
+
+<script type="text/x-magento-init">
+{
+    "#ajax-info-action":
+    {
+        "Softnoesis_Rma/js/magently-js": { 
+            "url": "<?php echo $block->getUrl('magerma/customer/orderinfo'); ?>"
+        } 
+    } 
+}
+</script>
+
+
+
+</form>
+
+<?php } else {
+    echo '<div class="message info empty"><span>You have no orders for Rma</span></div>';
+} ?>

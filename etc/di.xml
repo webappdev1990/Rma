@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Softnoesis
+ * Copyright(C) 04/2023 Softnoesis <ideveloper1990@gmail.com>
+ * @package Softnoesis_Rma
+ * @copyright Copyright(C) 2015 Softnoesis (ideveloper1990@gmail.com)
+ * @author Softnoesis <ideveloper1990@gmail.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="magerma_statuses_listing_data_source" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Statuses\Grid\Collection</item>
+                <item name="magerma_reasons_listing_data_source" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Reasons\Grid\Collection</item>
+                <item name="magerma_resolutions_listing_data_source" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Resolutions\Grid\Collection</item>
+                <item name="magerma_conditions_listing_data_source" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Conditions\Grid\Collection</item>
+                <item name="magerma_customfield_listing_data_source" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Customfield\Grid\Collection</item>
+                <item name="magerma_list_listing_data_source" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Rma\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Softnoesis\Rma\Model\ResourceModel\Statuses\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">md_rma_statuses</argument>
+            <argument name="eventPrefix" xsi:type="string">rma_statuses_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">statuses_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Statuses</argument>
+        </arguments>
+    </type>
+    <type name="Softnoesis\Rma\Model\ResourceModel\Reasons\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">md_rma_reasons</argument>
+            <argument name="eventPrefix" xsi:type="string">rma_reasons_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">reasons_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Reasons</argument>
+        </arguments>
+    </type>
+    <type name="Softnoesis\Rma\Model\ResourceModel\Resolutions\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">md_rma_resolutions</argument>
+            <argument name="eventPrefix" xsi:type="string">rma_resolutions_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">resolutions_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Resolutions</argument>
+        </arguments>
+    </type>
+    <type name="Softnoesis\Rma\Model\ResourceModel\Conditions\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">md_rma_conditions</argument>
+            <argument name="eventPrefix" xsi:type="string">rma_conditions_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">conditions_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Conditions</argument>
+        </arguments>
+    </type>
+    <type name="Softnoesis\Rma\Model\ResourceModel\Customfield\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">md_rma_customfield</argument>
+            <argument name="eventPrefix" xsi:type="string">rma_customfield_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">customfield_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Customfield</argument>
+        </arguments>
+    </type>
+    <type name="Softnoesis\Rma\Model\ResourceModel\Rma\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">md_rma_list</argument>
+            <argument name="eventPrefix" xsi:type="string">rma_list_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">list_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Softnoesis\Rma\Model\ResourceModel\Rma</argument>
+        </arguments>
+    </type>
+</config>
