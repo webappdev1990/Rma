@@ -9,6 +9,8 @@
 
 namespace Softnoesis\Rma\Block\Adminhtml\Rma\Add;
 
-class Form extends \Softnoesis\Rma\Block\Adminhtml\Rma\Add\SoftnoesisAbstractCreate
+use Softnoesis\Rma\Block\Adminhtml\Rma\Add\SoftnoesisAbstractCreate;
+
+class Form extends SoftnoesisAbstractCreate
 {
 }

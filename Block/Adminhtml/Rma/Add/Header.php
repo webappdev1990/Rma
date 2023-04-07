@@ -9,7 +9,9 @@
 
 namespace Softnoesis\Rma\Block\Adminhtml\Rma\Add;
 
-class Header extends \Softnoesis\Rma\Block\Adminhtml\Rma\Add\SoftnoesisAbstractCreate
+use Softnoesis\Rma\Block\Adminhtml\Rma\Add\SoftnoesisAbstractCreate;
+
+class Header extends SoftnoesisAbstractCreate
 {
     /**
      * Create new rma content

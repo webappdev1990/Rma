@@ -9,7 +9,9 @@
 
 namespace Softnoesis\Rma\Block\Adminhtml\Rma\Add;
 
-class Order extends \Softnoesis\Rma\Block\Adminhtml\Rma\Add\SoftnoesisAbstractCreate
+use Softnoesis\Rma\Block\Adminhtml\Rma\Add\SoftnoesisAbstractCreate;
+
+class Order extends SoftnoesisAbstractCreate
 {
     /**
      * Get Header Text for Order Selection
